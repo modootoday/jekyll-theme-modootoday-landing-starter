@@ -1,6 +1,9 @@
 # The live demo's settings. Only the Pages workflow of modootoday/jekyll-theme-modootoday-landing-starter
 # layers this file over _config.yml, so a repository created from this template, or a fork, builds without it.
 # You may delete it.
+# The demo's own address: the classic builder takes it from the Pages API, which can answer with a wrong base path.
+url: https://modootoday.github.io
+baseurl: /jekyll-theme-modootoday-landing-starter
 modootoday:
   showcase:
     enabled: true
