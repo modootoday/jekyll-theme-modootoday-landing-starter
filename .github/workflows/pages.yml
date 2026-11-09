@@ -1,0 +1,67 @@
+# Builds the site, runs modootoday-check on it and, on main, deploys it to GitHub Pages
+# (Settings > Pages > Source: GitHub Actions). Pull requests are built and checked only.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      # The live demo only: in modootoday/jekyll-theme-modootoday-landing-starter,
+      # _config.demo.yml (the showcase and noindex) is merged into _config.yml for the build.
+      # A repository created from this template, or a fork, skips this step and the restore step.
+      - name: Layer the demo config
+        if: github.repository == 'modootoday/jekyll-theme-modootoday-landing-starter'
+        run: |
+          cp _config.yml "$RUNNER_TEMP/_config.yml"
+          ruby -ryaml -rdate -e '
+            read = ->(f) { YAML.safe_load_file(f, permitted_classes: [Date, Time], aliases: true) || {} }
+            merge = ->(a, b) { a.merge(b) { |_, x, y| x.is_a?(Hash) && y.is_a?(Hash) ? merge.(x, y) : y } }
+            File.write("_config.yml", YAML.dump(merge.(read.("_config.yml"), read.("_config.demo.yml"))))'
+      # The builder image classic GitHub Pages uses; the theme comes from remote_theme in _config.yml.
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: .
+          destination: ./_site
+      - name: Restore _config.yml
+        if: github.repository == 'modootoday/jekyll-theme-modootoday-landing-starter'
+        run: mv "$RUNNER_TEMP/_config.yml" _config.yml
+      # No --github-pages here: the build above is the GitHub Pages builder itself, and there is no Gemfile.lock to read.
+      - name: Check the built site
+        run: |
+          gem install jekyll-theme-modootoday -v 1.6.0 --no-document
+          modootoday-check . _site --twins
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request'
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

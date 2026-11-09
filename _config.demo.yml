@@ -1,0 +1,10 @@
+# The live demo's settings. Only the Pages workflow of modootoday/jekyll-theme-modootoday-landing-starter
+# layers this file over _config.yml, so a repository created from this template, or a fork, builds without it.
+# You may delete it.
+modootoday:
+  showcase:
+    enabled: true
+    style: bar
+    starter: landing
+    docs_url: https://modootoday.github.io/jekyll-theme-modootoday/
+    use_url: https://github.com/modootoday/jekyll-theme-modootoday-landing-starter/generate

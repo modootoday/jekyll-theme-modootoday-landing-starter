@@ -1,0 +1,12 @@
+title: Example Product
+description: A neutral example landing site for jekyll-theme-modootoday.
+lang: en
+remote_theme: modootoday/jekyll-theme-modootoday@v1.6.0
+plugins: [jekyll-remote-theme]
+markdown: kramdown
+sass: {silence_deprecations: [import, global-builtin]}  # Dart Sass (Jekyll 4); ignored by GitHub Pages
+kramdown: {input: GFM, syntax_highlighter: rouge}
+permalink: pretty
+exclude: [Gemfile, Gemfile.lock, README.md]
+defaults:
+  - {scope: {path: ""}, values: {layout: doc}}

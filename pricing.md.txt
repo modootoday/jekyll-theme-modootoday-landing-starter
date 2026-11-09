@@ -1,0 +1,5 @@
+---
+layout: twin
+twin_of: pricing.md
+permalink: /pricing/index.md
+---
