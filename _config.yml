@@ -8,5 +8,8 @@ sass: {silence_deprecations: [import, global-builtin]}  # Dart Sass (Jekyll 4); 
 kramdown: {input: GFM, syntax_highlighter: rouge}
 permalink: pretty
 exclude: [Gemfile, Gemfile.lock, README.md]
+modootoday:
+  # The browser icon: the theme's mark, or a path to your own icon. Without one, browsers ask for /favicon.ico.
+  favicon: brand
 defaults:
   - {scope: {path: ""}, values: {layout: doc}}
